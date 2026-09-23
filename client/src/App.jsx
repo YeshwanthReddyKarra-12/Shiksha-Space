@@ -18,7 +18,7 @@ function AppContent() {
         ? <AuthPage onSuccess={() => { setPage('courses'); setMessage('You are signed in.'); }} onMessage={setMessage} />
         : <CoursesPage token={token} onMessage={setMessage} onSignIn={() => setPage('auth')} />}
     </main>
-    <footer className="footer">Learnly · Keep learning, one course at a time.</footer>
+    <footer className="footer">PLMS · Keep learning, one course at a time.</footer>
   </>;
 }
 
