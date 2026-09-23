@@ -14,18 +14,24 @@ const protect = async (req, res, next) => {
         });
     }
 
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    try {
+        const secret = process.env.SECRET_KEY || "secret_key";
+        const decoded = jwt.verify(token, secret);
 
-    req.user = await User.findById(decoded.id);
+        req.user = await User.findById(decoded.id);
 
-    if (!req.user) {
+        if (!req.user) {
+            return res.status(401).json({
+                message: "No user found with this id"
+            });
+        }
+
+        next();
+    } catch (error) {
         return res.status(401).json({
-            message: "No user found with this id"
+            message: "Not authorized to access this route"
         });
     }
-
-    next();
-  
 };
 
 // allowedRoles = []

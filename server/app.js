@@ -1,24 +1,33 @@
-const express = require("express")
-const connectDB = require("./config/db")
-const dotenv = require("dotenv")
-const dns = require("dns")
-const courseRoutes = require("./routes/courseRoutes")
-const app = express()
+const express = require("express");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const dns = require("dns");
+const fs = require("fs");
 
+if (fs.existsSync(".ENV")) {
+    dotenv.config({ path: ".ENV" });
+} else {
+    dotenv.config();
+}
 
+const connectDB = require("./config/db");
+const courseRoutes = require("./routes/courseRoutes");
+const authRoutes = require("./routes/authRoutes");
 
-app.use("/api/courses",courseRoutes)
+const app = express();
 
-// config() 
-// require("dotenv").config();
+app.use(cors());
+app.use(express.json());
 
-dns.setServers(["1.1.1.1", "8.8.8.8"])
-// app.get("/welcome",(req,res)=>{
-//     res.send("Welcome back")
-// })
+app.use("/api/auth", authRoutes);
+app.use("/api/courses", courseRoutes);
 
-connectDB()
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
-app.listen(3000,()=>{
-    console.log("listening to the PORT")
-})
+connectDB();
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`Server listening on PORT ${PORT}`);
+});
